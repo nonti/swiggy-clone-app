@@ -16,12 +16,10 @@ class UserRouter {
   }
 
   getRoutes() {
-    this.router.post('/signup', UserValidators.signup(),  UserContoller.signup);
-    this.router.get('/test', UserContoller.signup, UserContoller.test,  UserContoller.test2);
   }
 
   postRoutes() {
-    // this.router.post('/login', UserContoller.login);
+    this.router.post('/signup', UserValidators.signup(),  UserContoller.signup);
   }
   
   putRoutes() { }
