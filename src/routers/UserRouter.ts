@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { UserContoller } from "../controllers/UserController";
 
 class UserRouter {
 
@@ -14,19 +15,9 @@ class UserRouter {
   }
 
   getRoutes() {
-    this.router.get('/login', (req, res) => {
-    const data = [{ name: 'Rhandzu' }];
-    res.status(200).send(data);
-  });
-
-  this.router.get('/test', (req, res, next) => {
-    console.log('test');
-    (req as any).msg = 'This is a test';
-    next();
-
-  }, (req, res) => {
-    res.send((req as any).msg);
-  });
+    this.router.get('/login', UserContoller.login);
+    this.router.get('/test', UserContoller.test, UserContoller.test2);
+    
   }
 
   postRoutes() { }
