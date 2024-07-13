@@ -16,8 +16,7 @@ class UserRouter {
 
   getRoutes() {
     this.router.get('/login', UserContoller.login);
-    this.router.get('/test', UserContoller.test, UserContoller.test2);
-    
+    this.router.get('/test', UserContoller.login, UserContoller.test,  UserContoller.test2);
   }
 
   postRoutes() { }

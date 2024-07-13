@@ -1,9 +1,11 @@
 
 export class UserContoller {
 
-  static login(req, res) {
-    const data = [{ name: 'Rhandzu' }];
-    res.status(200).send(data);
+  static login(req, res, next) {
+    // const data = [{ name: 'Rhandzu' }];
+    // res.status(200).send(data);
+    const error = new Error('User Email or Password does not match');
+    next();
   }
 
   static test(req, res, next) {
