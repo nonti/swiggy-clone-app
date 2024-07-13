@@ -15,11 +15,13 @@ class UserRouter {
   }
 
   getRoutes() {
-    this.router.get('/login', UserContoller.login);
+    this.router.post('/login', UserContoller.login);
     this.router.get('/test', UserContoller.login, UserContoller.test,  UserContoller.test2);
   }
 
-  postRoutes() { }
+  postRoutes() {
+    // this.router.post('/login', UserContoller.login);
+  }
   
   putRoutes() { }
 
