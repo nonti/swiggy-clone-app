@@ -1,33 +1,53 @@
 import User from "../models/User";
+import { NodeMailer } from "../utils/NodeMailer";
 import { Utils } from "../utils/Utils";
-
+import * as Bcrypt from 'bcrypt';
 export class UserContoller {
+  
+  private static encryptPassword(req,res,next) {
+    return new Promise((resolve, reject) => {
+      Bcrypt.hash(req.body.password, 10, (err, hash) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(hash);
+        }
+      });
+    });
+  }
 
   static async signup(req, res, next) {
     const name = req.body.name;
     const email = req.body.email;
-    const password = req.body.password;
+    // const password = req.body.password;
     const type = req.body.type;
     const status = req.body.status;
     const phone = req.body.phone;
-
-    const data = {
-      email,
-      verification_token: Utils.generateVerificationToken(5),
-      verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
-      password,
-      name,
-      type,
-      phone,
-      status
+    const verification_token = Utils.generateVerificationToken();
+    
+    try {
+      const hash = await UserContoller.encryptPassword(req, res, next);
+      const data = {
+        email,
+        verification_token,
+        verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
+        password: hash,
+        name,
+        type,
+        phone,
+        status
     };
 
-    try {
       let user = await new User(data).save();
       //send email to user for verification
+      await NodeMailer.sendMail({
+        to: [user.email],
+        subject: 'Email Verification',
+        html: `<h1>Your otp is ${verification_token}</h1>`
+      });
       res.send(user);
-    } catch (error) {
-      next(error);
+    } catch (err) {
+      next(err);
     }
   }
 
@@ -49,7 +69,7 @@ export class UserContoller {
         }
       );
       if (user) {
-          //update and send 
+        //update and send 
       } else {
         throw new Error('Email verification token expired. Please try again');
       }
@@ -57,5 +77,32 @@ export class UserContoller {
       next(err);
     }
   }
-}
 
+  static async resendVerificationEmail(req, res, next) {
+    const email = req.query.email;
+    const verification_token = Utils.generateVerificationToken();
+    try {
+      const user = await User.findOneAndUpdate(
+        { email: email },
+        {
+          verification_token: verification_token,
+          verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+        }
+      );
+      if (user) {
+        //update and send 
+        await NodeMailer.sendMail({
+          to: [user.email],
+          subject: 'Resend Email Verification',
+          html: `<h1>Your otp is ${verification_token}</h1>`
+        });
+        res.json({success: true});
+      } else {
+        throw new Error('User Does Not Exist');
+      }
+    } catch (err) {
+      next(err);
+    }
+  }
+
+}
