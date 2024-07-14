@@ -1,16 +1,9 @@
 import User from "../models/User";
-import { body, validationResult } from 'express-validator';
+import { Utils } from "../utils/Utils";
 
 export class UserContoller {
 
   static async signup(req, res, next) {
-    // const data = [{ name: 'Rhandzu' }];
-    // res.status(200).send(data);
-    // (req as any).errorStatus = 422;
-    // const error = new Error('User Email or Password does not match');
-    // next(error);
-    // res.send(req.body);
-    const errors = validationResult(req);
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
@@ -18,12 +11,10 @@ export class UserContoller {
     const status = req.body.status;
     const phone = req.body.phone;
 
-    if (!errors.isEmpty()) {
-      return next(new Error(errors.array()[0].msg));
-    }
-
     const data = {
       email,
+      verification_token: Utils.generateVerificationToken(5),
+      verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
       password,
       name,
       type,
@@ -33,9 +24,37 @@ export class UserContoller {
 
     try {
       let user = await new User(data).save();
+      //send email to user for verification
       res.send(user);
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async verify(req, res, next) {
+    const verification_token = req.body.verification_token;
+    const email = req.body.email;
+    try {
+      const user = await User.findOneAndUpdate(
+        {
+          email: email,
+          verification_token: verification_token,
+          verification_token_time: { $gt: Date.now() }
+        },
+        {
+          email_verified: true
+        },
+        {
+          new: true
+        }
+      );
+      if (user) {
+          //update and send 
+      } else {
+        throw new Error('Email verification token expired. Please try again');
+      }
+    } catch (err) {
+      next(err);
     }
   }
 }
