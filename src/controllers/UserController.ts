@@ -1,32 +1,19 @@
 import User from "../models/User";
 import { NodeMailer } from "../utils/NodeMailer";
 import { Utils } from "../utils/Utils";
-import * as Bcrypt from 'bcrypt';
 export class UserContoller {
   
-  private static encryptPassword(req,res,next) {
-    return new Promise((resolve, reject) => {
-      Bcrypt.hash(req.body.password, 10, (err, hash) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve(hash);
-        }
-      });
-    });
-  }
-
   static async signup(req, res, next) {
     const name = req.body.name;
     const email = req.body.email;
-    // const password = req.body.password;
+    const password = req.body.password;
     const type = req.body.type;
     const status = req.body.status;
     const phone = req.body.phone;
     const verification_token = Utils.generateVerificationToken();
     
     try {
-      const hash = await UserContoller.encryptPassword(req, res, next);
+      const hash = await Utils.encryptPassword(password);
       const data = {
         email,
         verification_token,
@@ -40,6 +27,15 @@ export class UserContoller {
 
       let user = await new User(data).save();
       //send email to user for verification
+      const payload = {
+        user_id: user._id,
+        email: user.email,
+      }
+      const token = Utils.jwtSign(payload);
+      res.json({
+        token: token,
+        user: user
+      });
       await NodeMailer.sendMail({
         to: [user.email],
         subject: 'Email Verification',
@@ -105,4 +101,28 @@ export class UserContoller {
     }
   }
 
+  static async signin(req, res, next) {
+    const user = req.user;
+    const password = req.query.password;
+    const data = {
+      password,
+      encrypt_password: req.user.password
+    };
+    try {
+    await Utils.comparePassword(data);
+      const payload = {
+        user_id: user._id,
+        email: user.email,
+      }
+      const token = Utils.jwtSign;
+      res.json({
+        token: token,
+        user: user
+      });
+    } catch (err) {
+      next(err);
+    }
+  }
+
+        
 }

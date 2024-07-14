@@ -32,6 +32,29 @@ export class UserValidators {
             
     ]
   }
+
+  static signin() {
+    return [
+      query('email', 'Email is required').isEmail()
+        .custom((email, { req }) => {
+          return User.findOne({
+            email: email
+          }).then(user => {
+            if (user) {
+              req.user = user;
+              return true;
+            } else {
+              // throw new Error('User  Does Not Exist');
+              throw('No User Registered With Such Email');
+            }
+          }).catch(err => {
+            throw new Error(err);
+          })
+      }),  
+      query('password', 'Password is required').isAlphanumeric()     
+    ]
+  }
+
   static verifyUser() {
     return [
       body('verification_token', 'Email verification token is required').isNumeric(),      
