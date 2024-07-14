@@ -17,6 +17,7 @@ class UserRouter {
   }
 
   getRoutes() {
+    this.router.get('/send/verification/email', UserValidators.verifyUserForResendEmail(), UserContoller.resendVerificationEmail);
   }
 
   postRoutes() {
