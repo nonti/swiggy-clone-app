@@ -19,6 +19,8 @@ class UserRouter {
   getRoutes() {
     this.router.get('/send/verification/email', GlobalMiddleWare.auth, UserContoller.resendVerificationEmail);
     this.router.get('/signin', UserValidators.signin(), GlobalMiddleWare.checkError, UserContoller.signin);
+    this.router.get('/send/reset/password/token', UserValidators.checkResetPasswordEmail(), GlobalMiddleWare.checkError, UserContoller.sendResetPasswordOtp);
+    this.router.get('/verify/resetPasswordToken', UserValidators.verifyResetPasswordToken(), GlobalMiddleWare.checkError, UserContoller.verifyResetPasswordToken);
   }
 
   postRoutes() {
@@ -30,6 +32,7 @@ class UserRouter {
   deleteRoutes() { }
 
   patchRoutes() {
+    this.router.patch('/reset/password', UserValidators.resetPassword(), GlobalMiddleWare.checkError, UserContoller.resetPassword);
     this.router.patch('/verify', UserValidators.verifyUser(),GlobalMiddleWare.checkError,GlobalMiddleWare.auth, UserContoller.verify);
   }
 }
