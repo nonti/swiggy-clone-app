@@ -15,14 +15,18 @@ export class GlobalMiddleWare {
 
   static async auth(req, res, next) {
     const header_auth = req.headers.authorization;
-    const token = header_auth ? header_auth.slice(7, header_auth.length): null;
+    const token = header_auth ? header_auth.slice(7, header_auth.length) : null;
+    // alternative to line 18: const authHeader = header_auth.split(' '); const token1 = authHeader[1];
     try {
       req.errorStatus = 401;
+      if (!token) {
+        next(new Error('User does not exist'));
+      }
       const decoded = await Jwt.jwtVerify(token);
       req.user = decoded;
       next();
     } catch (err) {
-      next(err);
+      next(new Error('User does not exist'));
     }
   }
 }

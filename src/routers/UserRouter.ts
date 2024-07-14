@@ -33,7 +33,7 @@ class UserRouter {
 
   patchRoutes() {
     this.router.patch('/reset/password', UserValidators.resetPassword(), GlobalMiddleWare.checkError, UserContoller.resetPassword);
-    this.router.patch('/verify', UserValidators.verifyUser(),GlobalMiddleWare.checkError,GlobalMiddleWare.auth, UserContoller.verify);
+    this.router.patch('/verify/emailToken', GlobalMiddleWare.auth, UserValidators.verifyUserEmailToken(),GlobalMiddleWare.checkError, UserContoller.verifyUserEmailToken);
   }
 }
 
