@@ -10,7 +10,8 @@ export class Utils {
     for (let i = 0; i < digit; i++){
       otp += Math.floor(Math.random() * 10);
     }
-    return parseInt(otp);
+    // return parseInt(otp);
+    return otp;
   }
 
   static encryptPassword(password) {
@@ -24,7 +25,7 @@ export class Utils {
       });
     });
   }
-  
+
   static comparePassword(data:{password: string, encrypt_password: string}): Promise<any> {
     return new Promise((resolve, reject) => {
       Bcrypt.compare(data.password, data.encrypt_password, (err, same) => {

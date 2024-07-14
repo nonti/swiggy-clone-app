@@ -67,8 +67,9 @@ export class UserContoller {
       );
       if (user) {
         //update and send 
+        res.send(user);
       } else {
-        throw new Error('Email verification token expired. Please try again');
+        throw new Error('Wrong Otp or Email verification token expired. Please try again');
       }
     } catch (err) {
       next(err);
@@ -115,7 +116,7 @@ export class UserContoller {
         user_id: user._id,
         email: user.email,
       }
-      const token = Jwt.jwtSign;
+      const token = Jwt.jwtSign(payload);
       res.json({
         token: token,
         user: user
@@ -123,7 +124,5 @@ export class UserContoller {
     } catch (err) {
       next(err);
     }
-  }
-
-        
+  }        
 }

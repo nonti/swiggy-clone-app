@@ -25,5 +25,4 @@ export class GlobalMiddleWare {
       next(err);
     }
   }
-
 }
