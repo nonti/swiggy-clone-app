@@ -1,6 +1,4 @@
 import * as Bcrypt from 'bcrypt';
-import * as Jwt from 'jsonwebtoken';
-import { getEnvironmentVariables } from '../environments/environment';
 
 export class Utils {
   
@@ -26,6 +24,7 @@ export class Utils {
       });
     });
   }
+  
   static comparePassword(data:{password: string, encrypt_password: string}): Promise<any> {
     return new Promise((resolve, reject) => {
       Bcrypt.compare(data.password, data.encrypt_password, (err, same) => {
@@ -38,13 +37,5 @@ export class Utils {
         }
       });
     });
-  }
-
-  static jwtSign(payload, expires_in: string = '180d') {
-    return Jwt.sign(
-        payload,
-        getEnvironmentVariables().jwt_secret_key,
-        {expiresIn: expires_in}
-      );
   }
 }

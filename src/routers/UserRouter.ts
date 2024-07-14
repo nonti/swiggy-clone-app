@@ -17,7 +17,7 @@ class UserRouter {
   }
 
   getRoutes() {
-    this.router.get('/send/verification/email', UserValidators.verifyUserForResendEmail(), GlobalMiddleWare.checkError, UserContoller.resendVerificationEmail);
+    this.router.get('/send/verification/email', GlobalMiddleWare.auth, UserContoller.resendVerificationEmail);
     this.router.get('/signin', UserValidators.signin(), GlobalMiddleWare.checkError, UserContoller.signin);
   }
 
@@ -30,7 +30,7 @@ class UserRouter {
   deleteRoutes() { }
 
   patchRoutes() {
-    this.router.patch('/verify', UserValidators.verifyUser(),GlobalMiddleWare.checkError,  UserContoller.verify);
+    this.router.patch('/verify', UserValidators.verifyUser(),GlobalMiddleWare.checkError,GlobalMiddleWare.auth, UserContoller.verify);
   }
 }
 

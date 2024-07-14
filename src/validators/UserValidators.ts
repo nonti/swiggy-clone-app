@@ -58,11 +58,8 @@ export class UserValidators {
   static verifyUser() {
     return [
       body('verification_token', 'Email verification token is required').isNumeric(),      
-      body('email', 'Email is required').isEmail(),            
     ]
   }
 
-  static verifyUserForResendEmail() {
-    return [query('email', 'Email is required').isEmail()];
-  }
+  
 }
