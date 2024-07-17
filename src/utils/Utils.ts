@@ -1,7 +1,7 @@
 import * as Bcrypt from 'bcrypt';
 import * as Multer from 'multer';
 
-const destinationOptions = Multer.diskStorage({
+const storageOptions = Multer.diskStorage({
   destination:  (req, file, cb) =>{
     cb(null, './src/uploads');
   },
@@ -21,7 +21,7 @@ const fileFilter = (req, file, cb) => {
 export class Utils {
   
   public MAX_TOKEN_TIME = (5 * 60 * 1000);
-  public multer = Multer({storage: destinationOptions, fileFilter: fileFilter});
+  public multer = Multer({storage: storageOptions, fileFilter: fileFilter});
   
   static generateVerificationToken(digit: number = 6) {
     const digits = '0123456789';

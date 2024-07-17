@@ -36,7 +36,7 @@ export class GlobalMiddleWare {
       if (user.type !== 'admin') {
         req.errorStatus = 401;
         next(new Error('You are an Unauthorized User'));
-      }
-      next();
+    }
+    next();
   }
 }
