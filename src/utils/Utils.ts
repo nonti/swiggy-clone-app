@@ -1,8 +1,27 @@
 import * as Bcrypt from 'bcrypt';
+import * as Multer from 'multer';
 
+const destinationOptions = Multer.diskStorage({
+  destination:  (req, file, cb) =>{
+    cb(null, './src/uploads');
+  },
+  filename:  (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, uniqueSuffix + file.originalname);
+  }
+}); 
+
+const fileFilter = (req, file, cb) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
 export class Utils {
   
   public MAX_TOKEN_TIME = (5 * 60 * 1000);
+  public multer = Multer({storage: destinationOptions, fileFilter: fileFilter});
   
   static generateVerificationToken(digit: number = 6) {
     const digits = '0123456789';

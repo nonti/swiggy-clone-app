@@ -29,9 +29,10 @@ export class UserContoller {
       let user = await new User(data).save();
       //send email to user for verification
       const payload = {
-        user_id: user._id,
-        // aud: user._id,
+        // user_id: user._id,
+        aud: user._id,
         email: user.email,
+        type: user.type
       }
       const token = Jwt.jwtSign(payload);
       res.json({
@@ -116,9 +117,10 @@ export class UserContoller {
     try {
     await Utils.comparePassword(data);
       const payload = {
-        user_id: user._id,
-        // aud: user._id,
+        // user_id: user._id,
+        aud: user._id,
         email: user.email,
+        type: user.type,
       }
       const token = Jwt.jwtSign(payload);
       res.json({
@@ -130,7 +132,7 @@ export class UserContoller {
     }
   }        
 
-  static async sendResetPasswordOtp(req, res, next) {
+  static async sendResetPasswordOtp(req, res, next) { 
     const email = req.query.email;
     const reset_password_token = Utils.generateVerificationToken();
     try {
@@ -147,7 +149,7 @@ export class UserContoller {
         res.json({success: true});
         await NodeMailer.sendMail({
           to: [user.email],
-          subject: 'Resend password email verification OTP',
+          subject: 'Reset password email verification OTP',
           html: `<h1>Your otp is ${reset_password_token}</h1>`
         });
       } else {
@@ -203,7 +205,7 @@ export class UserContoller {
     const user = req.user;
     const phone = req.body.phone;
     try {
-      const userData = await User.findOneAndUpdate(
+      const userData = await User.findByIdAndUpdate(
         user.aud,
         { phone: phone, updated_at: new Date() },
         {new: true}
@@ -240,9 +242,10 @@ export class UserContoller {
         {new:true}
       );
       const payload = {
-        user_id: user._id,
-        // aud: user.aud,
+        // user_id: user._id,
+        aud: user.aud,
         email: updatedUser.email,
+        type: updatedUser.type
       }
       const token = Jwt.jwtSign(payload);
       res.json({
