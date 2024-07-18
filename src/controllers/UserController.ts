@@ -3,7 +3,6 @@ import { Jwt } from "../utils/Jwt";
 import { NodeMailer } from "../utils/NodeMailer";
 import { Utils } from "../utils/Utils";
 export class UserContoller {
-  
   static async signup(req, res, next) {
     const name = req.body.name;
     const email = req.body.email;
@@ -12,7 +11,7 @@ export class UserContoller {
     const status = req.body.status;
     const phone = req.body.phone;
     const verification_token = Utils.generateVerificationToken();
-    
+
     try {
       const hash = await Utils.encryptPassword(password);
       const data = {
@@ -23,8 +22,8 @@ export class UserContoller {
         name,
         type,
         phone,
-        status
-    };
+        status,
+      };
 
       let user = await new User(data).save();
       //send email to user for verification
@@ -32,17 +31,17 @@ export class UserContoller {
         // user_id: user._id,
         aud: user._id,
         email: user.email,
-        type: user.type
-      }
+        type: user.type,
+      };
       const token = Jwt.jwtSign(payload);
       res.json({
         token: token,
-        user: user
+        user: user,
       });
       await NodeMailer.sendMail({
         to: [user.email],
-        subject: 'Email Verification',
-        html: `<h1>Your otp is ${verification_token}</h1>`
+        subject: "Email Verification",
+        html: `<h1>Your otp is ${verification_token}</h1>`,
       });
       res.send(user);
     } catch (err) {
@@ -58,21 +57,23 @@ export class UserContoller {
         {
           email: email,
           verification_token: verification_token,
-          verification_token_time: { $gt: Date.now() }
+          verification_token_time: { $gt: Date.now() },
         },
         {
           email_verified: true,
-          updated_at: new Date()
+          updated_at: new Date(),
         },
         {
-          new: true
+          new: true,
         }
       );
       if (user) {
-        //update and send 
+        //update and send
         res.send(user);
       } else {
-        throw new Error('Wrong Otp or Email verification token expired. Please try again');
+        throw new Error(
+          "Wrong Otp or Email verification token expired. Please try again"
+        );
       }
     } catch (err) {
       next(err);
@@ -88,19 +89,19 @@ export class UserContoller {
         {
           updated_at: new Date(),
           verification_token: verification_token,
-          verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+          verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
         }
       );
       if (user) {
-        //update and send 
-        res.json({success: true});
+        //update and send
+        res.json({ success: true });
         await NodeMailer.sendMail({
           to: [user.email],
-          subject: 'Resend Email Verification',
-          html: `<h1>Your otp is ${verification_token}</h1>`
+          subject: "Resend Email Verification",
+          html: `<h1>Your otp is ${verification_token}</h1>`,
         });
       } else {
-        throw new Error('User Does Not Exist');
+        throw new Error("User Does Not Exist");
       }
     } catch (err) {
       next(err);
@@ -112,27 +113,27 @@ export class UserContoller {
     const password = req.query.password;
     const data = {
       password,
-      encrypt_password: req.user.password
+      encrypt_password: req.user.password,
     };
     try {
-    await Utils.comparePassword(data);
+      await Utils.comparePassword(data);
       const payload = {
         // user_id: user._id,
         aud: user._id,
         email: user.email,
         type: user.type,
-      }
+      };
       const token = Jwt.jwtSign(payload);
       res.json({
         token: token,
-        user: user
+        user: user,
       });
     } catch (err) {
       next(err);
     }
-  }        
+  }
 
-  static async sendResetPasswordOtp(req, res, next) { 
+  static async sendResetPasswordOtp(req, res, next) {
     const email = req.query.email;
     const reset_password_token = Utils.generateVerificationToken();
     try {
@@ -141,19 +142,19 @@ export class UserContoller {
         {
           updated_at: new Date(),
           reset_password_token: reset_password_token,
-          reset_password_token_time: Date.now() + new Utils().MAX_TOKEN_TIME
+          reset_password_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
         }
       );
       if (user) {
-        //update and send 
-        res.json({success: true});
+        //update and send
+        res.json({ success: true });
         await NodeMailer.sendMail({
           to: [user.email],
-          subject: 'Reset password email verification OTP',
-          html: `<h1>Your otp is ${reset_password_token}</h1>`
+          subject: "Reset password email verification OTP",
+          html: `<h1>Your otp is ${reset_password_token}</h1>`,
         });
       } else {
-        throw new Error('User Does Not Exist');
+        throw new Error("User Does Not Exist");
       }
     } catch (err) {
       next(err);
@@ -173,14 +174,14 @@ export class UserContoller {
         user._id,
         {
           updated_at: new Date(),
-          password: encrypted_password
+          password: encrypted_password,
         },
         { new: true }
       );
       if (updatedUser) {
         res.send(updatedUser);
       } else {
-        throw new Error('User Does Not Exist');
+        throw new Error("User Does Not Exist");
       }
     } catch (err) {
       next(err);
@@ -194,7 +195,7 @@ export class UserContoller {
       if (profile) {
         res.send(profile);
       } else {
-        throw new Error('User Does Not Exist');
+        throw new Error("User Does Not Exist");
       }
     } catch (err) {
       next(err);
@@ -208,14 +209,14 @@ export class UserContoller {
       const userData = await User.findByIdAndUpdate(
         user.aud,
         { phone: phone, updated_at: new Date() },
-        {new: true}
+        { new: true }
       );
       res.send(userData);
     } catch (error) {
       next(error);
     }
   }
-  
+
   static async updateUserProfile(req, res, next) {
     const user = req.user;
     const phone = req.body.phone;
@@ -224,10 +225,10 @@ export class UserContoller {
     const verification_token = Utils.generateVerificationToken();
     try {
       const userData = await User.findById(user.aud);
-        if(!userData) throw new Error('User doesn\'t exist');
+      if (!userData) throw new Error("User doesn't exist");
       await Utils.comparePassword({
         password: plain_password,
-        encrypt_password: userData.password
+        encrypt_password: userData.password,
       });
       const updatedUser = await User.findByIdAndUpdate(
         user.aud,
@@ -237,25 +238,25 @@ export class UserContoller {
           email_verified: false,
           verification_token,
           verification_token_time: Date.now() + new Utils().MAX_TOKEN_TIME,
-          updated_at: Date.now()
+          updated_at: Date.now(),
         },
-        {new:true}
+        { new: true }
       );
       const payload = {
         // user_id: user._id,
         aud: user.aud,
         email: updatedUser.email,
-        type: updatedUser.type
-      }
+        type: updatedUser.type,
+      };
       const token = Jwt.jwtSign(payload);
       res.json({
         token: token,
-        user: updatedUser
+        user: updatedUser,
       });
       await NodeMailer.sendMail({
         to: [updatedUser.email],
-        subject: 'Email Verification',
-        html: `<h1>Your otp is ${verification_token}</h1>`
+        subject: "Email Verification",
+        html: `<h1>Your otp is ${verification_token}</h1>`,
       });
     } catch (error) {
       next(error);

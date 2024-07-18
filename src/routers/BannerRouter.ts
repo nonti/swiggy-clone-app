@@ -1,12 +1,10 @@
-
-import { Router } from 'express';
-import { GlobalMiddleWare } from '../middlewares/GlobalMiddleWare';
-import { BannerValidators } from '../validators/BannerValidators';
-import { BannerController } from '../controllers/BannerController';
-import { Utils } from '../utils/Utils';
+import { Router } from "express";
+import { GlobalMiddleWare } from "../middlewares/GlobalMiddleWare";
+import { BannerValidators } from "../validators/BannerValidators";
+import { BannerController } from "../controllers/BannerController";
+import { Utils } from "../utils/Utils";
 
 export class BannerRouter {
-
   public router: Router;
 
   constructor() {
@@ -19,19 +17,30 @@ export class BannerRouter {
   }
 
   getRoutes() {
-    this.router.get('/banners', GlobalMiddleWare.auth, BannerController.getBanners )
+    this.router.get(
+      "/banners",
+      GlobalMiddleWare.auth,
+      BannerController.getBanners
+    );
   }
 
   postRoutes() {
-    this.router.post('/create', GlobalMiddleWare.auth, GlobalMiddleWare.adminRole, new Utils().multer.single('banner'), BannerValidators.addBanner(), GlobalMiddleWare.checkError, BannerController.addBanner);
+    this.router.post(
+      "/create",
+      GlobalMiddleWare.auth,
+      GlobalMiddleWare.adminRole,
+      new Utils().multer.single("bannerImages"),
+      BannerValidators.addBanner(),
+      GlobalMiddleWare.checkError,
+      BannerController.addBanner
+    );
   }
-  
-  putRoutes() { }
 
-  deleteRoutes() { }
+  putRoutes() {}
 
-  patchRoutes() {  }
+  deleteRoutes() {}
+
+  patchRoutes() {}
 }
 
 export default new BannerRouter().router;
-

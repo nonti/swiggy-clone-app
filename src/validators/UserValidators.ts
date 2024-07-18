@@ -150,7 +150,7 @@ export class UserValidators {
           return User.findOne({
             email: email
           }).then(user => {
-            if (user) {
+            if (!user) {
               // throw new Error('A User witn entered email already exists, please provide a uniques email id');
               throw ('User entered email already exists, please provide a uniques email id');
             } else {
