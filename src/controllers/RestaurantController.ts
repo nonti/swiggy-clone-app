@@ -23,16 +23,10 @@ export class RestaurantController {
         phone: restaurant.phone,
       };
       const user = await new User(data).save();
-      //create categories
-      const categoriesData = JSON.parse(restaurant.categories).map((x) => {
-        return { name: x, user_id: user._id };
-      });
-      const categories = Category.insertMany(categoriesData);
-
       //create restuarant
       let restaurant_data: any = {
         name: restaurant.res_name,
-        short_name: restaurant.short_name,
+        // short_name: restaurant.short_name,
         location: JSON.parse(restaurant.location),
         address: restaurant.address,
         open_time: restaurant.open_time,
@@ -51,6 +45,13 @@ export class RestaurantController {
           description: restaurant.description,
         };
       const restaurantDoc = await new Restaurant(restaurant_data).save();
+
+      //create categories
+      const categoriesData = JSON.parse(restaurant.categories).map((x) => {
+        return { name: x, restaurant_id: restaurantDoc._id };
+      });
+      const categories = Category.insertMany(categoriesData);
+
       res.send(restaurantDoc);
     } catch (err) {
       next(err);
