@@ -16,14 +16,25 @@ export class AddressController {
         lng: data.lng
       }
       const address = await new Address(addressData).save();
-      delete address.user_id;
-      res.send(address);
+      // delete address.user_id;
+      // delete address.__v;
+      const response_address = {
+        title: address.title,
+        address: address.address,
+        landmark: address.landmark,
+        house: address.house,
+        lat: address.lat,
+        lng: address.lng,
+        created_at: address.created_at,
+        updated_at: address.updated_at
+      }
+      res.send(response_address);
     } catch (err) {
       next(err);
     }
   }
 
-  static async getAddresses(req, res, next) {
+  static async getUserAddresses(req, res, next) {
     const user_id = req.user.aud;
     try {
       const addresses = await Address.find({ user_id }, {user_id: 0, __v: 0});
@@ -32,7 +43,7 @@ export class AddressController {
       next(err)
     }
   }
-  static async getLimitedAddresses(req, res, next) {
+  static async getUserLimitedAddresses(req, res, next) {
     const user_id = req.user.aud;
     const limit = req.query.limit;
     try {
@@ -67,7 +78,8 @@ export class AddressController {
         {
           user_id,
           _id: id
-        }
+        },
+        { user_id: 0, __v: 0 }
       );
       res.send(address);
     } catch (err) {
@@ -94,7 +106,7 @@ export class AddressController {
           lng: data.lng,
           updated_at: new Date()
         },
-        { new: true }
+        { new: true, projection: {user_id: 0, __v: 0} }
       );
       if (address) {
         res.send(address);

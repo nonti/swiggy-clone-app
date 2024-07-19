@@ -17,9 +17,9 @@ public router: Router;
   }
 
   getRoutes() {
-    this.router.get('/addresses', GlobalMiddleWare.auth, AddressController.getAddresses);
+    this.router.get('/userAddresses', GlobalMiddleWare.auth, AddressController.getUserAddresses);
     this.router.get('/checkAddress', GlobalMiddleWare.auth, AddressValidators.checkAddress(), GlobalMiddleWare.checkError, AddressController.checkAddress);
-    this.router.get('/getLimitedAddresses', GlobalMiddleWare.auth, AddressValidators.getLimitedAddresses(), GlobalMiddleWare.checkError, AddressController.getLimitedAddresses);
+    this.router.get('/getUserLimitedAddresses', GlobalMiddleWare.auth, AddressValidators.getUserLimitedAddresses(), GlobalMiddleWare.checkError, AddressController.getUserLimitedAddresses);
     // this.router.get('/:id', GlobalMiddleWare.auth, AddressController.getAddressesById);
   }
 

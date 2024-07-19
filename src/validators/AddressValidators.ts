@@ -30,7 +30,7 @@ export class AddressValidators {
       query('lng', 'Longitude is required').isNumeric(),
     ];
   }
-  static getLimitedAddresses() {
+  static getUserLimitedAddresses() {
     return [
       query('limit', 'Address Limit is required').isNumeric(),
     ];
