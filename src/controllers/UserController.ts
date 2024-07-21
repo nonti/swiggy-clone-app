@@ -33,6 +33,7 @@ export class UserContoller {
         email: user.email,
         type: user.type,
       };
+      //filter user data to pass in frontend 
       const access_token = Jwt.jwtSign(payload, user._id);
       const refresh_token = Jwt.jwtSignRefreshToken(payload, user._id);
       res.json({
@@ -266,6 +267,31 @@ export class UserContoller {
       });
     } catch (error) {
       next(error);
+    }
+  }
+
+  static async getNewToken(req, res, next) {
+    const refresh_token = req.body.refresh_token;
+    try {
+      const decoded_data = await Jwt.jwtVerifyRefreshToken(refresh_token);
+      if (decoded_data) {
+        const payload = {
+        // user_id: decoded_data.aud,
+        email: decoded_data.email,
+        type: decoded_data.type,
+      };
+      const access_token = Jwt.jwtSign(payload, decoded_data.aud);
+      const refresh_token = Jwt.jwtSignRefreshToken(payload, decoded_data.aud);
+      res.json({
+        access_token: access_token,
+        refresh_token: refresh_token,
+      });
+      } else {
+        throw ('Access is forbidden');
+      }
+    } catch (err) {
+      req.errorStatus = 403;
+      next(err);
     }
   }
 }
