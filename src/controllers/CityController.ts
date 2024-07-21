@@ -1,5 +1,5 @@
-import Banner from "../models/Banner";
-import City from "../models/City";
+import Banner from '../models/Banner';
+import City from '../models/City';
 
 export class CityController {
 

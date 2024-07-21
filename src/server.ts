@@ -11,6 +11,7 @@ import CategoryRouter from './routers/CategoryRouter';
 import ItemRouter from './routers/ItemRouter';
 import AddressRouter from './routers/AddressRouter';
 import OrderRouter from './routers/OrderRouter';
+import { Utils } from './utils/Utils';
 
 export class Server {
   
@@ -24,9 +25,14 @@ export class Server {
   }
 
   setConfigs() {
+    this.dotenvConfigs();
     this.connectMongoDB();
     this.allowCors();
     this.configureBodyParser();
+  }
+  
+  dotenvConfigs() {
+    Utils.dotenvConfigs();
   }
 
   connectMongoDB() {

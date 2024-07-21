@@ -1,5 +1,5 @@
-import { body,query } from "express-validator";
-import User from "../models/User";
+import { body,query } from 'express-validator';
+import User from '../models/User';
 
 export class RestaurantValidators {
   

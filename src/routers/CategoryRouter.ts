@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { GlobalMiddleWare } from "../middlewares/GlobalMiddleWare";
-import { CategoryController } from "../controllers/CategoryController";
+import { Router } from 'express';
+import { GlobalMiddleWare } from '../middlewares/GlobalMiddleWare';
+import { CategoryController } from '../controllers/CategoryController';
 
 export class CategoryRouter{
 

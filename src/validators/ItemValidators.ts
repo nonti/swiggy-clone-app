@@ -1,6 +1,6 @@
-import { body, param } from "express-validator";
-import Restaurant from "../models/Restaurant";
-import Category from "../models/Category";
+import { body, param } from 'express-validator';
+import Restaurant from '../models/Restaurant';
+import Category from '../models/Category';
 
 export class ItemValidators {
 

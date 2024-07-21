@@ -3,6 +3,7 @@ import { model } from 'mongoose';
 
 const bannerSchema = new mongoose.Schema({
   banner: { type: String, required: true },
+  restaurant_id: { type: mongoose.Types.ObjectId, ref: "restuarants", required: true },
   status: { type: Boolean, required: true, default: true },
   created_at: { type: Date, required: true, default: new Date()},
   updated_at: { type: Date, required: true, default: new Date()},

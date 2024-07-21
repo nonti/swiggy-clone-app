@@ -1,4 +1,4 @@
-import { body, query } from "express-validator";
+import { body, query } from 'express-validator';
 
 export class AddressValidators {
   

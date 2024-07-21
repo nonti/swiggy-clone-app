@@ -1,9 +1,9 @@
-import * as mongoose from "mongoose";
-import { model } from "mongoose";
+import * as mongoose from 'mongoose';
+import { model } from 'mongoose';
 
 const itemSchema = new mongoose.Schema({
-  restaurant_id: { type: mongoose.Types.ObjectId, ref: "restuarants", required: true },
-  category_id: { type: mongoose.Types.ObjectId, ref: "categories", required: true },
+  restaurant_id: { type: mongoose.Types.ObjectId, ref: 'restuarants', required: true },
+  category_id: { type: mongoose.Types.ObjectId, ref: 'categories', required: true },
   name: { type: String, required: true },
   description: {type: String, required: true},
   cover: { type: String, required: true },
@@ -14,4 +14,4 @@ const itemSchema = new mongoose.Schema({
   updated_at: { type: Date, required: true, default: new Date() },
 });
 
-export default model("items", itemSchema);
+export default model('items', itemSchema);

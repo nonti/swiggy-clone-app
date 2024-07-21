@@ -1,5 +1,5 @@
-import Category from "../models/Category";
-import Item from "../models/Item";
+import Category from '../models/Category';
+import Item from '../models/Item';
 
 
 export class ItemController {

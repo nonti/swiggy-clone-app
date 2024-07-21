@@ -1,7 +1,7 @@
-import { Router } from "express";
-import { UserContoller } from "../controllers/UserController";
-import { UserValidators } from "../validators/UserValidators";
-import { GlobalMiddleWare } from "../middlewares/GlobalMiddleWare";
+import { Router } from 'express';
+import { UserContoller } from '../controllers/UserController';
+import { UserValidators } from '../validators/UserValidators';
+import { GlobalMiddleWare } from '../middlewares/GlobalMiddleWare';
 
 class UserRouter {
 

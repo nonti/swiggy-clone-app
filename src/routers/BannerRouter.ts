@@ -1,8 +1,8 @@
-import { Router } from "express";
-import { GlobalMiddleWare } from "../middlewares/GlobalMiddleWare";
-import { BannerValidators } from "../validators/BannerValidators";
-import { BannerController } from "../controllers/BannerController";
-import { Utils } from "../utils/Utils";
+import { Router } from 'express';
+import { GlobalMiddleWare } from '../middlewares/GlobalMiddleWare';
+import { BannerValidators } from '../validators/BannerValidators';
+import { BannerController } from '../controllers/BannerController';
+import { Utils } from '../utils/Utils';
 
 export class BannerRouter {
   public router: Router;
@@ -18,7 +18,7 @@ export class BannerRouter {
 
   getRoutes() {
     this.router.get(
-      "/banners",
+      '/banners',
       GlobalMiddleWare.auth,
       BannerController.getBanners
     );
@@ -26,10 +26,10 @@ export class BannerRouter {
 
   postRoutes() {
     this.router.post(
-      "/create",
+      '/create',
       GlobalMiddleWare.auth,
       GlobalMiddleWare.adminRole,
-      new Utils().multer.single("bannerImages"),
+      new Utils().multer.single('bannerImages'),
       BannerValidators.addBanner(),
       GlobalMiddleWare.checkError,
       BannerController.addBanner

@@ -1,6 +1,6 @@
 
-import { body } from "express-validator";
-import Restaurant from "../models/Restaurant";
+import { body } from 'express-validator';
+import Restaurant from '../models/Restaurant';
 
 export class OrderValidators {
   

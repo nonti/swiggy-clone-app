@@ -1,6 +1,6 @@
-import * as nodeMailer from "nodemailer";
-import * as SendGrid from "nodemailer-sendgrid-transport";
-import { getEnvironmentVariables } from "../environments/environment";
+import * as nodeMailer from 'nodemailer';
+import * as SendGrid from 'nodemailer-sendgrid-transport';
+import { getEnvironmentVariables } from '../environments/environment';
 
 export class NodeMailer {
   private static initiateTransport() {

@@ -1,4 +1,4 @@
-import Order from "../models/Order";
+import Order from '../models/Order';
 
 export class OrderController {
 
@@ -45,12 +45,36 @@ export class OrderController {
 
   static async getUserOrders(req, res, next) {
     const user_id = req.user.aud;
+    const perPage = 5;
+    const currentPage = parseInt(req.query.page) || 1;
+    const prevPage = currentPage == 1 ? null : currentPage - 1;
+    let nextPage = currentPage + 1;
     try {
+      const order_doc_count = await Order.countDocuments({ user_id: user_id });
+      const totalPages = Math.ceil(order_doc_count / perPage);
+      if (totalPages == 0 || totalPages == currentPage) {
+        nextPage = null;
+      }
+
+      if (totalPages < currentPage) {
+        throw ('No more Orders available');
+      }
       const orders = await Order.find({ user_id }, { user_id: 0, __v: 0 })
+        .skip((perPage * currentPage) - perPage)
+        .limit(perPage)
         .sort({'created_at': -1})
         .populate('restaurant_id')
         .exec();
-      res.send(orders);
+      // res.send(orders);
+      res.json({
+        orders,
+        perPage,
+        currentPage,
+        prevPage,
+        nextPage,
+        totalPages,
+        // totalRecords: order_doc_count
+      });
     } catch (err) {
       next(err);
     }

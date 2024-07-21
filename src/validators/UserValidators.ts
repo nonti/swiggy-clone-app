@@ -1,6 +1,6 @@
-import { body,query } from "express-validator";
-import User from "../models/User";
-import {  } from "express";
+import { body,query } from 'express-validator';
+import User from '../models/User';
+import {  } from 'express';
 
 export class UserValidators {
   
