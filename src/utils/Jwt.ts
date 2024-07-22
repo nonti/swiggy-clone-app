@@ -3,7 +3,7 @@ import { getEnvironmentVariables } from '../environments/environment';
 import * as Crypto from 'crypto';
 
 export class Jwt {
-  static jwtSign(payload, userId, expires_in: string = '10s') {
+  static jwtSign(payload, userId, expires_in: string = '60s') {
     //JwT Token generation is used once, only change if a token is know by another user
     // Jwt.gen_secret_key();
     return jwt.sign(
