@@ -12,6 +12,7 @@ import ItemRouter from './routers/ItemRouter';
 import AddressRouter from './routers/AddressRouter';
 import OrderRouter from './routers/OrderRouter';
 import { Utils } from './utils/Utils';
+import { Redis } from './utils/Redis';
 
 export class Server {
   
@@ -27,12 +28,17 @@ export class Server {
   setConfigs() {
     this.dotenvConfigs();
     this.connectMongoDB();
+    this.connectRedis();
     this.allowCors();
     this.configureBodyParser();
   }
   
   dotenvConfigs() {
     Utils.dotenvConfigs();
+  }
+
+  connectRedis() {
+    Redis.connectToRedis();
   }
 
   connectMongoDB() {

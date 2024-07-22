@@ -12,6 +12,12 @@ export interface Environment {
   gmail_auth?: {
     user: string,
     pass: string
+  },
+  redis?: {
+    username?: string,
+    password?: string,
+    host: string,
+    port: number
   }
 }
 
