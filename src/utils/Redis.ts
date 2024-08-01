@@ -14,35 +14,53 @@ export const client = createClient(
       }
     );
 
-
 export class Redis {
 
   static  connectToRedis() {
-    // this.client.on('error', (err) => console.log('Redis Client Error', err));
+    // this.client.on('err', (e) => console.log('Redis Client err', e));
     client.connect().then(() => {
       console.log('Connected to Redis');
     }
-    ).catch((err) => {
-      throw (err)
+    ).catch((e) => {
+      throw (e)
     });
   }
 
   static async setValue(key: string, value: string, expires_at?) {
-    let options: any;
-    if(expires_at)  {
-      options = {
-        EX: expires_at,
-      };
+    try {
+      let options: any = {};
+      if (expires_at) {
+        options = {
+          EX: expires_at,
+        };
+      }
+      await client.set(key, value, options);
+      return;
+    } catch(e) {
+      console.log(e);
+      // throw new eor ('Server not connected! Please try again');
+      throw ('Server not connected! Please try again');
     }
-    await client.set(key, value, options);
   }
 
   static async getValue(key: string) {
-    const value = await client.get(key);
-    return value;
+    try {
+      const value = await client.get(key);
+      return value;
+    } catch(e) {
+      console.log(e);
+      // throw new eor ('User is not authorised');
+      throw ('User is not authorised');
+    }
   }
 
-  static async delKey(key: string) {
-    await client.del(key);
+  static async deleteKey(key: string) {
+    try {
+      await client.del(key);
+    } catch (e) {
+      console.log(e);
+      // throw new eor ('Server not connected! Please try again');
+      throw ('Server not connected! Please try again');
+    }
   }
 }

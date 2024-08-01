@@ -4,13 +4,12 @@ import User from '../models/User';
 import { Utils } from '../utils/Utils';
 
 export class RestaurantController {
-  
-  static async addRestaurant(req, res, next) {
+    static async addRestaurant(req, res, next) {
     const restaurant = req.body;
     const path = req.file.path;
     const verification_token = Utils.generateVerificationToken();
     try {
-      //create restuarent user
+      //create restuarant user
       const hash = await Utils.encryptPassword(restaurant.password);
       const data = {
         email: restaurant.email,
@@ -23,6 +22,7 @@ export class RestaurantController {
         phone: restaurant.phone,
       };
       const user = await new User(data).save();
+
       //create restuarant
       let restaurant_data: any = {
         name: restaurant.res_name,
@@ -39,11 +39,7 @@ export class RestaurantController {
         user_id: user._id,
         cover: path,
       };
-      if (restaurant.description)
-        restaurant_data = {
-          ...restaurant_data,
-          description: restaurant.description,
-        };
+      if (restaurant.description) restaurant_data = {...restaurant_data, description: restaurant.description, };
       const restaurantDoc = await new Restaurant(restaurant_data).save();
 
       //create categories
@@ -53,6 +49,12 @@ export class RestaurantController {
       const categories = Category.insertMany(categoriesData);
 
       res.send(restaurantDoc);
+      // send mail to restuarant user for verification
+      //await NodeMailer.sendMail({
+      // to: [user.email],
+      //subject: 'Email Verification'
+      // html: `<h1>Your Otp is ${verification_token}</h1>`,
+    //});
     } catch (err) {
       next(err);
     }
@@ -88,6 +90,18 @@ export class RestaurantController {
           } 
         }  
       );
+      //send empty array if no document  on filter query exists
+      if (!restaurants_doc_count) {
+        res.json({
+        restaurants: [],
+        perPage,
+        currentPage,
+        prevPage,
+        nextPage: null,
+        totalPages: 0,
+        // totalRecords: resturants_doc_count
+      });
+      }
       const totalPages = Math.ceil(restaurants_doc_count / perPage);
       if (totalPages == 0 || totalPages == currentPage) {
         nextPage = null;
@@ -133,7 +147,7 @@ export class RestaurantController {
   }
 
   static async searchNearbyResturant(req, res, next) {
-     // const METERS_PER_MILE = 1609.34;
+    // const METERS_PER_MILE = 1609.34;
     // const METERS_PER_KM = 1000;
     // const EARTH_RADIUS_IN_MILE = 3963.2;
     const EARTH_RADIUS_IN_KM = 6378.1;
@@ -143,10 +157,11 @@ export class RestaurantController {
     const prevPage = currentPage == 1 ? null : currentPage - 1;
     let nextPage = currentPage + 1;
     try {
+      // const restaurant_doc_count = await Restaurant.estimatedDocumentCount(); // filter not available
       const restaurants_doc_count = await Restaurant.countDocuments(
         {
           status: 'active',
-          name: { $regex: data.name, $options: 'i'},
+          name: { $regex: data.name, $options: 'i' },
           location: {
             // $nearSphere: {
             //   $geometry: {
@@ -157,55 +172,67 @@ export class RestaurantController {
             // }
             $geoWithin: {
               $centerSphere: [[parseFloat(data.lng), parseFloat(data.lat)],
-                (parseFloat(data.radius) / EARTH_RADIUS_IN_KM) 
+              (parseFloat(data.radius) / EARTH_RADIUS_IN_KM)
               ]
-            }        
-          } 
-        }  
-      );
-      const totalPages = Math.ceil(restaurants_doc_count / perPage);
-      if (totalPages == 0 || totalPages == currentPage) {
-        nextPage = null;
-      }
-
-      if (totalPages < currentPage) {
-        throw ('No more Restaurants available');
-      }
-      const restaurants = await Restaurant.find(
-        {
-          status: 'active',
-          name: { $regex: data.name, $options: 'i'},
-          location: {
-            // $nearSphere: {
-            //   $geometry: {
-            //     type: 'Point',
-            //     coordinates: [parseFloat(data.lng), parseFloat(data.lat)]
-            //   },
-            //   $maxDistance: data.radius * METERS_PER_KM
-            // }
-            $geoWithin: {
-              $centerSphere: [[parseFloat(data.lng), parseFloat(data.lat)],
-                (parseFloat(data.radius) / EARTH_RADIUS_IN_KM) 
-              ]
-            }        
-          } 
+            }
+          }
         }
-      )
-      .skip((perPage * currentPage) - perPage)
-      .limit(perPage);
-      // res.send(restaurants);
-      res.json({
-        restaurants,
-        perPage,
-        currentPage,
-        prevPage,
-        nextPage,
-        totalPages,
-        // totalRecords: resturants_doc_count
-      });
-    } catch (err) {
-      next(err);
-    }
+      );
+      //send empty array if no document  on filter query exists
+      if (!restaurants_doc_count) {
+        res.json({
+          restaurants: [],
+          perPage,
+          currentPage,
+          prevPage,
+          nextPage: null,
+          totalPages: 0,
+          // totalRecords: resturants_doc_count
+        });
+        const totalPages = Math.ceil(restaurants_doc_count / perPage);
+        if (totalPages == 0 || totalPages == currentPage) {
+          nextPage = null;
+        }
+
+        if (totalPages < currentPage) {
+          throw ('No more Restaurants available');
+        }
+        const restaurants = await Restaurant.find(
+          {
+            status: 'active',
+            name: { $regex: data.name, $options: 'i' },
+            location: {
+              // $nearSphere: {
+              //   $geometry: {
+              //     type: 'Point',
+              //     coordinates: [parseFloat(data.lng), parseFloat(data.lat)]
+              //   },
+              //   $maxDistance: data.radius * METERS_PER_KM
+              // }
+              $geoWithin: {
+                $centerSphere: [[parseFloat(data.lng), parseFloat(data.lat)],
+                (parseFloat(data.radius) / EARTH_RADIUS_IN_KM)
+                ]
+              }
+            }
+          }
+        )
+          .skip((perPage * currentPage) - perPage)
+          .limit(perPage);
+        // res.send(restaurants);
+        res.json({
+          restaurants,
+          perPage,
+          currentPage,
+          prevPage,
+          nextPage,
+          totalPages,
+          // totalRecords: resturants_doc_count
+        });
+      } 
+    }catch (err) {
+        next(err);
+      }
   }
 
   static async getRestaurants(req, res, next) {

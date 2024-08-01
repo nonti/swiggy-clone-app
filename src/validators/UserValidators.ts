@@ -164,20 +164,21 @@ export class UserValidators {
     ];
   }
 
-  static checkRefreshToken() {
-    return [
-      body('refresh_token', 'Refesh Token is required').isString()
-        .custom((refresh_token, { req }) => {
-          if (refresh_token) {
-            return true;
-          } else {
-            req.errorStatus = 403;
-            // throw new Error('Access is forbidden');
-            throw ('Access is forbidden');
-          }
-        })
-    ];
-  }
+  // static checkRefreshToken() {
+  //   return [
+  //     body('refresh_token', 'Refesh Token is required').isString()
+  //       .custom((refresh_token, { req }) => {
+  //         if (refresh_token) {
+  //           return true;
+  //         } else {
+  //           req.errorStatus = 403;
+  //           // throw new Error('Access is forbidden');
+  //           throw ('Access is forbidden');
+  //         }
+  //       })
+  //   ];
+  // }
+
 }
 
   

@@ -5,18 +5,18 @@ import { getEnvironmentVariables } from '../environments/environment';
 export class NodeMailer {
   private static initiateTransport() {
     return nodeMailer.createTransport(
-      SendGrid({
-        auth: {
-          api_key: getEnvironmentVariables().sendgrid.api_key,
-        },
-      })
-      // {
-      //   service: 'gmail',
+      // SendGrid({
       //   auth: {
-      //     user: getEnvironmentVariables().gmail_auth.user,
-      //     pass: getEnvironmentVariables().gmail_auth.pass
-      //   }
-      // }
+      //     api_key: getEnvironmentVariables().sendgrid.api_key,
+      //   },
+      // })
+      {
+        service: 'gmail',
+        auth: {
+          user: getEnvironmentVariables().gmail_auth.user,
+          pass: getEnvironmentVariables().gmail_auth.pass
+        }
+      }
       //Note: https://myaccount.google.com/lesssecureapps
       // switch off 2 wat authentication but remember its not that secure to do so
     );
@@ -28,8 +28,8 @@ export class NodeMailer {
     html: string;
   }): Promise<any> {
     return NodeMailer.initiateTransport().sendMail({
-      from: getEnvironmentVariables().sendgrid.email_from,
-      // from: getEnvironmentVariables().gmail_auth.user,
+      // from: getEnvironmentVariables().sendgrid.email_from,
+      from: getEnvironmentVariables().gmail_auth.user,
       to: data.to,
       subject: data.subject,
       html: data.html,

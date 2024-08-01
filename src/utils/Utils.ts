@@ -65,4 +65,10 @@ export class Utils {
       });
     });
   }
+
+  // curentDate() {
+  //   return new Date().toLocaleString('en-US', {
+  //     timeZone: 'Africa/Johannesburg'
+  //   });
+  // }
 }

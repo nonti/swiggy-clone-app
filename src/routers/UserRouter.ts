@@ -26,7 +26,8 @@ class UserRouter {
 
   postRoutes() {
     this.router.post('/signup', UserValidators.signup(), GlobalMiddleWare.checkError,  UserContoller.signup);
-    this.router.post('/refresh_token', UserValidators.checkRefreshToken(), GlobalMiddleWare.checkError,  UserContoller.getNewToken);
+    this.router.post('/refresh_token', GlobalMiddleWare.decodeRefreshToken,  UserContoller.getNewToken);
+    this.router.post('/logout', GlobalMiddleWare.auth, GlobalMiddleWare.decodeRefreshToken, UserContoller.logout);
   }
   
   putRoutes() { }

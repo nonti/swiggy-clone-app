@@ -4,7 +4,7 @@ import { model } from 'mongoose';
 const restuarantSchema = new mongoose.Schema({
   user_id: {type: mongoose.Types.ObjectId, ref: 'users', required: true},
   city_id: {type: mongoose.Types.ObjectId, ref: 'cities', required: true},
-  name: { type: String, required: true },
+  name: { type: String, required: true},
   // short_name: { type: String, required: true },
   description: {type: String, required: true},
   cover: { type: String, required: true},
@@ -24,4 +24,6 @@ const restuarantSchema = new mongoose.Schema({
 
 });
 
+//restuarantSchema.index({ location: '2dsphere'}, {background: true})
+// restuarantSchema.index({ name: 1 })
 export default model('restuarants', restuarantSchema);

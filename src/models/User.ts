@@ -13,7 +13,9 @@ const userSchema = new mongoose.Schema({
   type: { type: String, required: true },
   phone: { type: Number, required: true },
   status: { type: String, required: true },
-  created_at: { type: Date, required: true, default: new Date()},
+  // uuid:[{ type: String}],
+  created_at: {
+    type: Date, required: true, default: new Date()},
   updated_at: { type: Date, required: true, default: new Date()},
 
 });

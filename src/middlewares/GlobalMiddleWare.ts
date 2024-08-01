@@ -37,4 +37,20 @@ export class GlobalMiddleWare {
     }
     next();
   }
+
+  static async decodeRefreshToken(req, res, next) {
+    const refresh_token = req.body.refresh_token;
+    try {
+      if (!refresh_token) {
+        req.errorStatus = 403;
+          next( new Error ('Access is forbidden. User does not exist'));
+      }
+      const decoded = await Jwt.jwtVerifyRefreshToken(refresh_token);
+      req.user = decoded;
+      next();
+    } catch (err) {
+      req.errorStatus = 401;
+      next(new Error('Your session is expired. Please signin again.'));
+    }
+  }
 }

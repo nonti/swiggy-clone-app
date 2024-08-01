@@ -38,10 +38,21 @@ export class AddressController {
     const user_id = req.user.aud;
     const perPage = 5;
     const currentPage = parseInt(req.query.page) || 1;
-    const prevPage = currentPage == 1 ? null : currentPage - 1;
-    let nextPage = currentPage + 1;
+    const prevPage = currentPage == 1 ? null : currentPage - 1;                                                                                                                                                                                  let nextPage = currentPage + 1;
     try {
       const address_doc_count = await Address.countDocuments({ user_id: user_id });
+        //send empty array of no document on fitler query exists
+      if (!address_doc_count) {
+        res.json({
+        addresses: [],
+        perPage,
+        currentPage,
+        prevPage,
+        nextPage: null,
+        totalPages: 0,
+        // totalRecords: address_doc_count
+      });
+      }
       const totalPages = Math.ceil(address_doc_count / perPage);
       if (totalPages == 0 || totalPages == currentPage) {
         nextPage = null;
